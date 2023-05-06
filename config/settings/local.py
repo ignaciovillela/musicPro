@@ -110,6 +110,10 @@ USE_L10N = True
 USE_TZ = True
 
 USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = '.'
+
+FORMAT_MODULE_PATH = 'config.formats'
+
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

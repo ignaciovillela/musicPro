@@ -2,6 +2,8 @@
 {% load humanize %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
+{% load custom_filters %}
+
 {% block title %}
 Checkout
 {% endblock %}
@@ -14,11 +16,11 @@ Checkout
             {% for item in cart %}
             <li>
                 {{ item.quantity }}x {{ item.product.name }}
-                <span>$ {{ item.total_price|floatformat|intcomma }}</span>
+                <span>$ {{ item.total_price|formatnumber }}</span>
             </li>
             {% endfor %}
         </ul>
-        <h4>Total: $ {{ cart.get_total_price|floatformat|intcomma }}</h4>
+        <h4>Total: $ {{ cart.get_total_price|formatnumber }}</h4>
     </div>
     <form action="." method="post" class="order-form">
         {{ form|crispy }}
@@ -30,7 +32,7 @@ Checkout
 {% block sctipt %}
     <script>
         $(() => {
-            $('#id_value').val('{{ form.value.initial|floatformat|intcomma }}');
+            $('#id_value').val('{{ form.value.initial|formatnumber }}');
             $('#id_usd_value').val('{{ form.usd_value.initial|floatformat:2|intcomma }}');
         });
     </script>

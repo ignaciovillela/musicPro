@@ -1,6 +1,8 @@
 {% extends "shop/base/base.html" %}
 {% load humanize %}
 {% load static %}
+{% load custom_filters %}
+
 {% block title %}
 {% if category %}{{ category.name }}{% else %}Products{% endif %}
 {% endblock %}
@@ -29,7 +31,7 @@
                             <div class="block-4-text p-4">
                                 <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
                                 <p class="mb-0">{{ product.description }}</p>
-                                <p class="text-primary font-weight-bold">$ {{ product.price|floatformat|intcomma }}</p>
+                                <p class="text-primary font-weight-bold">$ {{ product.price|formatnumber }}</p>
                             </div>
                         </div>
                     </div>

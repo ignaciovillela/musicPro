@@ -835,3 +835,7 @@ a {
 html {
   scroll-behavior: auto!important;
 }
+
+.text-right {
+    text-align: right;
+}
