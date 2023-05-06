@@ -751,3 +751,87 @@ a {
   width: 120px;
   border-radius: 50%;
   margin-bottom: 20px; }
+
+.disabled {
+  pointer-events: none;
+  background-color: #e6e7e9 !important;
+  border-color: #e6e7e9 !important;
+  color: #464646 !important;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px;
+  z-index: 1000;
+  width: 500px;
+  font-size: 16px;
+  font-weight: bold;
+  opacity: 0.85;
+}
+.toast.bg-success {
+  background-image: linear-gradient(120deg, #00bfa5, #8bc34a);
+}
+.toast.bg-error {
+  background-image: linear-gradient(120deg, #c62828, #ffab40);
+}
+
+.toast-body {
+  color: white; /* cambia el color del texto a blanco */
+    text-align: center!important;
+}
+
+.btn-close {
+  color: white; /* cambia el color de la x a blanco */
+}
+
+.toast .btn-close {
+  color: white!important;
+}
+
+:root {
+  --primary-color: #7971ea;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-secondary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+a {
+  color: var(--primary-color);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+  color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+html {
+  scroll-behavior: auto!important;
+}

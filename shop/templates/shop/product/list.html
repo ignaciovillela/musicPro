@@ -1,4 +1,5 @@
 {% extends "shop/base/base.html" %}
+{% load humanize %}
 {% load static %}
 {% block title %}
 {% if category %}{{ category.name }}{% else %}Products{% endif %}
@@ -22,19 +23,19 @@
                     <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                         <div class="block-4 text-center border">
                             <figure class="block-4-image">
-                                <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" 
+                                <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}"
                                         alt="Image placeholder" class="img-fluid" style="height: 10vw;"></a>
                             </figure>
                             <div class="block-4-text p-4">
                                 <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
                                 <p class="mb-0">{{ product.description }}</p>
-                                <p class="text-primary font-weight-bold">${{ product.price }}</p>
+                                <p class="text-primary font-weight-bold">$ {{ product.price|floatformat|intcomma }}</p>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
-                
+
                 <div class="row" data-aos="fade-up">
                     <div class="col-md-12 text-center">
                         <div class="site-block-27">
@@ -56,7 +57,7 @@
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
                     <ul class="list-unstyled mb-0">
                         <li {% if not category %} class="mb-1" {% endif %}>
-                            <a href="{% url "shop:product_list" %}" class="d-flex"><span>All</a>
+                            <a href="{% url "shop:product_list" %}" class="d-flex"><span>All</span></a>
                         </li>
                         {% for c in categories %}
                         <li {% if category.slug == c.slug %} class="mb-1" {% endif %}>

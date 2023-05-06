@@ -1,4 +1,6 @@
 {% extends "shop/base/base.html" %}
+{% load humanize %}
+{% load crispy_forms_filters %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
@@ -11,7 +13,7 @@
           <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">{{ product.name }}</strong></div>
         </div>
       </div>
-    </div>  
+    </div>
 
     <div class="site-section">
       <div class="container">
@@ -22,7 +24,7 @@
           <div class="col-md-6">
             <h2 class="text-black mr-2">{{ product.name }}</h2>
             <p>{{ product.description|linebreaks }}</p>
-            <p><strong class="text-primary h4">${{ product.price }}</strong></p>
+            <p><strong class="text-primary h4">$ {{ product.price|floatformat|intcomma }}</strong></p>
             <div class="mt-5 col-md-5">
               <form action="{% url "cart:cart_add" product.id %}" method="post">
                 {% csrf_token %}

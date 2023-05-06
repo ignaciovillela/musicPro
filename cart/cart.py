@@ -3,7 +3,8 @@ from django.conf import settings
 from coupons.models import Coupon
 from shop.models import Product
 
-class Cart():
+
+class Cart:
 
     def __init__(self, request):
         """
@@ -68,11 +69,17 @@ class Cart():
         """
         return sum(item['quantity'] for item in self.cart.values())
 
-    def get_total_price(self):
+    def __bool__(self):
+        return len(self) != 0
+
+    def get_total_price(self, clp=True):
         """
         calculate the total cost of the items in the cart
         """
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+        conversion_factor = 1
+        if not clp:
+            conversion_factor = 1
+        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values()) / conversion_factor
 
     def clear(self):
         """
@@ -87,11 +94,11 @@ class Cart():
             return Coupon.objects.get(id=self.coupon_id)
         return None
 
-    def get_discount(self):
+    def get_discount(self, clp=True):
         if self.coupon:
             return (self.coupon.discount / Decimal('100')) \
-                * self.get_total_price()
+                * self.get_total_price(clp=clp)
         return Decimal('0')
 
-    def get_total_price_after_discount(self):
-        return self.get_total_price() - self.get_discount()
+    def get_total_price_after_discount(self, clp=True):
+        return self.get_total_price(clp) - self.get_discount(clp)

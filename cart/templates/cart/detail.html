@@ -1,123 +1,151 @@
 {% extends "shop/base/base.html" %}
+{% load crispy_forms_filters %}
+{% load humanize %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+
 {% block title %}
-Your shopping cart
+    Your shopping cart
 {% endblock %}
 {% block content %}
 
 
-<div class="bg-light py-3">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <strong
+    <div class="bg-light py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-0"><a href="{% url 'shop:product_list' %}">Home</a> <span class="mx-2 mb-0">/</span> <strong
                     class="text-black">Cart</strong></div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="site-section">
-    <div class="container">
-        <div class="row mb-5">
-            <form class="col-md-12" method="post">
-                <div class="site-blocks-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th class="product-thumbnail">Image</th>
-                                <th class="product-name">Product</th>
-                                <th class="product-price">Price</th>
-                                <th class="product-quantity">Quantity</th>
-                                <th class="product-total">Total</th>
-                                <th class="product-remove">Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>{% for item in cart %}
-                                {% with product=item.product %}
-                            <tr>
-                                <td class="product-thumbnail">
-                                    <img src="{{ product.image.url }}" alt="Image" class="img-fluid">
-                                </td>
-                                <td class="product-name">
-                                    <h2 class="h5 text-black">{{ product.name }}</h2>
-                                </td>
-                                <td>${{ item.price }}</td>
-                                <td>
-                                    <div class="input-group mb-3" style="max-width: 120px;">
-                                        <div class="input-group-prepend">
-                                            <form action="{% url "cart:cart_add" product.id %}" method="post">
-                                                {% csrf_token %}
-                                                {{ item.update_quantity_form.quantity }}
-                                                {{ item.update_quantity_form.override }}
-                                                <input class="btn btn-outline-primary js-btn-plus" type="submit"
-                                                    value="Update">
-                                            </form>
+    <div class="site-section">
+        <div class="container">
+            <div class="row mb-5">
+                <forms class="col-md-12" method="post">
+                    <div class="site-blocks-table">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="product-thumbnail">Image</th>
+                                    <th class="product-name">Product</th>
+                                    <th class="product-price">Price</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-total">Total</th>
+                                    <th class="product-remove">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart %}
+                                    {% with product=item.product %}
+                                        <tr>
+                                            <td class="product-thumbnail">
+                                                <img src="{{ product.image.url }}" alt="Image" class="img-fluid">
+                                            </td>
+                                            <td class="product-name">
+                                                <h2 class="h5 text-black">{{ product.name }}</h2>
+                                            </td>
+                                            <td>${{ item.price }}</td>
+                                            <td>
+                                                <div class="input-group mb-3" style="max-width: 140px;">
+                                                    <div class="input-group-prepend">
+                                                        {{ item.update_quantity_form.quantity|add_class:"form-control" }}
+                                                        {{ item.update_quantity_form.update }}
+                                                    </div>
+                                                    <button class="btn btn-outline-primary update-product" data-url="{% url "cart:cart_add" product.id %}">Update</button>
+                                                </div>
+                                            </td>
+                                            <td>$ {{ item.total_price|floatformat|intcomma }}</td>
+                                            <td><a href="{% url "cart:cart_remove" product.id %}"
+                                                   class="btn btn-primary btn-sm">X</a></td>
+                                        </tr>
+                                    {% endwith %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </forms>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row mb-5">
+                        <div class="col-md-7 mb-3 mb-md-0">
+                            <button onclick="window.location='{% url "shop:product_list" %}'" class="btn btn-primary btn-sm btn-block">Continue Shopping</button>
+                        </div>
+                        <div class="col-md-5">
+                            <button class="btn btn-outline-primary btn-sm btn-block">Checkout</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="text-black h4" for="coupon">Coupon</label>
+                            <p>Enter your coupon code if you have one.</p>
+                            {% if cart.coupon %}
+                                <div class="col-md-6 pl-0 mb-3 mb-md-0">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Cupón: {{ cart.coupon.code }}" readonly>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button" onclick="window.location='{% url "coupons:remove" %}#totals'">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
                                         </div>
                                     </div>
-                                </td>
-                                <td>${{ item.total_price }}</td>
-                                <td><a href="{% url "cart:cart_remove" product.id %}"
-                                        class="btn btn-primary btn-sm">X</a></td>
-                            </tr>
-                            {% endwith %}
-                            {% endfor %}
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-            </form>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="row mb-5">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <button onclick="window.location='{% url "shop:product_list" %}'" class="btn btn-primary btn-sm btn-block">Continue Shopping</button>
-                    </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-primary btn-sm btn-block">Checkout</button>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <form action="{% url "coupons:apply" %}#totals" method="post">
+                            {% csrf_token %}
+                            <div class="col-md-8 mb-3 mb-md-0">
+                                {{ coupon_apply_form.code|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary btn-sm">Apply Coupon</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="text-black h4" for="coupon">Coupon</label>
-                        <p>Enter your coupon code if you have one.</p>
-                    </div>
-                    <form action="{% url "coupons:apply" %}" method="post">
-                        {% csrf_token %}
-                        <div class="col-md-8 mb-3 mb-md-0">
-                            {{ coupon_apply_form.code|as_crispy_field }}
-                        </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary btn-sm">Apply Coupon</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-6 pl-5">
-                <div class="row justify-content-end">
-                    <div class="col-md-7">
-                        <div class="row">
-                            <div class="col-md-12 text-right border-bottom mb-5">
-                                <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                <div id="totals" class="col-md-6 pl-5">
+                    <div class="row justify-content-end">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-12 text-right border-bottom mb-5">
+                                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="row mb-5">
-                            <div class="col-md-6">
-                                <span class="text-black">Total</span>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <span class="text-black">Total parcial</span>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <strong class="text-black">$ {{ cart.get_total_price|floatformat|intcomma }}</strong>
+                                </div>
                             </div>
-                            <div class="col-md-6 text-right">
-                                <strong class="text-black">{{ cart.get_total_price_after_discount|floatformat:"2" }}</strong>
+                            <div class="row mb-5">
+                                <div class="col-md-6">
+                                    <span class="text-black">Descuentos</span>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <strong class="text-black">{% if cart.coupon %}{{ cart.coupon.discount }}% ($ -{{ cart.get_discount|floatformat|intcomma }}){% else %}0{% endif %}</strong>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button class="btn btn-primary btn-lg py-3 btn-block"
-                                    onclick="window.location='{% url "order:order_create" %}'">Proceed To Checkout</button>
+                            <div class="row mb-5">
+                                <div class="col-md-6">
+                                    <span class="text-black">Total</span>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <strong class="text-black">$ {{ cart.get_total_price_after_discount|floatformat|intcomma }}</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button
+                                        class="btn btn-primary btn-lg py-3 btn-block {% if not cart %}disabled{% endif %}"
+                                        onclick="window.location='{% url "order:order_create" %}'"
+                                        {% if not cart %}disabled="disabled"{% endif %}
+                                    >Proceed To Checkout</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,5 +153,33 @@ Your shopping cart
             </div>
         </div>
     </div>
-</div>
+    <script>
+        const updateButtons = document.querySelectorAll('.update-product');
+
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const url = button.getAttribute('data-url');
+                const formDiv = button.closest('div');
+
+                const quantity = formDiv.querySelector('#id_quantity').value;
+                const update = formDiv.querySelector('#id_update').value;
+
+                const formData = new FormData();
+                formData.append('quantity', quantity);
+                formData.append('update', update);
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: formData,
+                }).then(response => {
+                    location.reload();
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
 {% endblock %}
