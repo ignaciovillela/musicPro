@@ -14,3 +14,4 @@ bleach==6.0.0
 whitenoise==6.4.0
 python-dotenv==1.0.0
 django-widget-tweaks==1.4.12
+django-bootstrap4==23.1
