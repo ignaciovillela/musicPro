@@ -4,8 +4,12 @@ Thank you
 {% endblock %}
 {% block content %}
 <div class="container text-center mt-5 mb-5">
-    <h1>Thank you</h1>
-    <h3>Your order has been successfully completed. Your order number is
-    <strong>{{ order.id }}</strong>.</h3>
+    {% if order.paid %}
+        <h1>Thank you</h1>
+        <h3>Your order has been successfully completed. Your order number is <strong>{{ order.id }}</strong>.</h3>
+    {% else %}
+        <h1>Pago en proceso</h1>
+        <h3>Su orden número {{ order.id }} aún se encuentra en proceso, por favor, espere un momento y recargue la página.</h3>
+    {% endif %}
 </div>
 {% endblock %}

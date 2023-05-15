@@ -7,6 +7,6 @@ register = template.Library()
 
 @register.filter
 def formatnumber(value, decimal_places=2):
-    numero_redondeado = round(value, decimal_places)
-    numero_formateado = format(numero_redondeado, ',.2f').replace(',', ';').replace('.', ',').replace(';', '.')
-    return numero_formateado.rstrip('0').rstrip(',')
+    rounded_value = f'{{:,.{decimal_places}f}}'.format(value)
+    formatted_value = rounded_value.replace(',', ';').replace('.', ',').replace(';', '.')
+    return formatted_value.rstrip('0').rstrip(',')

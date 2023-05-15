@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="{% static "css/style.css" %}">
     </head>
 
-    <body>
+    <body><div id="_body">
         <div class="site-wrap">
             {% if messages.0 %}
                 <div class="toast bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="5000">
@@ -35,19 +35,19 @@
             {% endblock %}
             {% include 'shop/base/footer.html' %}
         </div>
-        <script src="{% static "js/jquery-3.6.0.min.js" %}"></script>
-        <script src="{% static "js/jquery-ui.js" %}"></script>
-        <script src="{% static "js/popper.min.js" %}"></script>
-        <script src="{% static "js/twitter-bootstrap-5.1.1.min.js" %}"></script>
-        <script src="{% static "js/owl.carousel.min.js" %}"></script>
-        <script src="{% static "js/jquery.magnific-popup.min.js" %}"></script>
-        <script src="{% static "js/aos.js" %}"></script>
-        <script src="{% static "js/main.js" %}"></script>
-    </body>
+    </div></body>
+    <script src="{% static "js/jquery-3.6.0.min.js" %}"></script>
+    <script src="{% static "js/jquery-ui.js" %}"></script>
+    <script src="{% static "js/popper.min.js" %}"></script>
+    <script src="{% static "js/twitter-bootstrap-5.1.1.min.js" %}"></script>
+    <script src="{% static "js/owl.carousel.min.js" %}"></script>
+    <script src="{% static "js/jquery.magnific-popup.min.js" %}"></script>
+    <script src="{% static "js/aos.js" %}"></script>
+    <script src="{% static "js/main.js" %}"></script>
     <script>
         function showToast(message, type) {
             const toastText = $(`
-                  <div class="toast bg-${type}" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="5000">
+                <div class="toast bg-${type}" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="5000">
                     <div class="d-flex justify-content-between">
                         <div class="toast-body">
                             ${message}
@@ -66,6 +66,8 @@
             showToast("{{ message|escapejs }}", "{{ message.tags }}");
         {% endfor %}
     </script>
-    {% block sctipt %}
-    {% endblock %}
+    <div id="_scripts">
+        {% block sctipt %}
+        {% endblock %}
+    </div>
 </html>

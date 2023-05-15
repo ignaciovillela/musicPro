@@ -15,12 +15,12 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
     paid = models.BooleanField(default=False)
+    tom_bank_id = models.CharField(max_length=36)
 
     currency = models.CharField(choices=CurrencyExchangeType.choices, max_length=3)
-    currency_exchange = models.DecimalField(max_digits=10, decimal_places=2)
-    usd_value = models.DecimalField(max_digits=10, decimal_places=2)
-
+    usd_value = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     value = models.IntegerField()
 
     class Meta:

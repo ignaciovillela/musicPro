@@ -5,35 +5,117 @@
 {% load custom_filters %}
 
 {% block title %}
-Checkout
+    Checkout
 {% endblock %}
 {% block content %}
-<div class="container">
-    <h1 class="text-center">Checkout</h1>
-    <div class="order-info">
-        <h3 class="text-center">Your order</h3>
-        <ul>
-            {% for item in cart %}
-            <li>
-                {{ item.quantity }}x {{ item.product.name }}
-                <span>$ {{ item.total_price|formatnumber }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-        <h4>Total: $ {{ cart.get_total_price|formatnumber }}</h4>
+    <div class="container">
+        <h1 class="text-center">Checkout</h1>
+        <div class="order-info">
+            <h3 class="text-center">Your order</h3>
+            <ul>
+                {% for item in cart %}
+                    <li>
+                        {{ item.quantity }}x {{ item.product.name }}
+                        <span>$ {{ item.total_price|formatnumber }}</span>
+                    </li>
+                {% endfor %}
+                {% if cart.coupon %}
+                    <li>Descuento <span>$ -{{ cart.get_discount.ok|formatnumber }}</span></li>
+                {% endif %}
+            </ul>
+            <h4>Total: $ {{ cart.get_total_price.ok|formatnumber }}</h4>
+        </div>
+        <form method="post" id="order-form">
+            {% csrf_token %}
+            <div class="row">
+                {% for field in form %}
+                    {% if field.auto_id == 'id_currency' %}
+                        <div class="col-12 mt-5"></div>
+                    {% endif %}
+                    <div id="div_col_{{ field.auto_id }}" class="col-4">
+                        {{ field|as_crispy_field }}
+                    </div>
+                {% endfor %}
+            </div>
+            <p class="mt-5"><input id="submit" class="btn btn-primary btn-sm btn-block" type="submit" value="Continuar con el pago"></p>
+            <p>Serás redirigido a TomBank para realizar la transacción</p>
+        </form>
     </div>
-    <form action="." method="post" class="order-form">
-        {{ form|crispy }}
-        <p><input class="btn btn-primary btn-sm btn-block" type="submit" value="Place order"></p>
-        {% csrf_token %}
-    </form>
-</div>
 {% endblock %}
 {% block sctipt %}
     <script>
         $(() => {
-            $('#id_value').val('{{ form.value.initial|formatnumber }}');
-            $('#id_usd_value').val('{{ form.usd_value.initial|floatformat:2|intcomma }}');
+            const form = $('#order-form');
+            const value = $('#id_value');
+            const usdValue = $('#id_usd_value');
+            const currency = $('#id_currency');
+            const submit = $('#submit');
+
+            const valueDiv = $('#div_col_id_value');
+            const usdValueDiv = $('#div_col_id_usd_value');
+
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+            form.on('submit', (e) => {
+                e.preventDefault();
+                $.ajax({
+                    url: '{% url "order:order_create" %}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    data: form.serialize(),
+                    success: function(response) {
+                        console.log(response)
+                        if (response.ok) {
+                            window.location.replace(response.url_pago);
+                        } else if (response.page) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = response.page;
+                            const bodyElement = tempDiv.querySelector('#_body');
+                            const scriptsElement = tempDiv.querySelector('#_scripts');
+                            if (bodyElement) {
+                                const bodyContent = bodyElement.innerHTML;
+                                const scriptsContent = scriptsElement.innerHTML;
+                                $('#_body').html(bodyContent);
+                                $('#_scripts').html(scriptsContent);
+                            }
+                        }
+                        else if (response.msg) {
+                            showToast(response.msg, 'error')
+                        } else {
+                            showToast('Ocurrió un error inesperado', 'error');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR, textStatus, errorThrown)
+                        showToast('Ocurrió un error inesperado, por favor intente más tarde', 'error');
+                    }
+                });
+            });
+
+            value.val('{{ form.value.initial|formatnumber }}');
+            usdValue.val('{{ form.usd_value.initial|floatformat:2|intcomma|default:' -- No disponible --' }}');
+            currency.on('change', (e) => {
+                if (e.target.value === 'usd') {
+                    valueDiv.hide();
+                    usdValueDiv.show();
+                } else {
+                    valueDiv.show();
+                    usdValueDiv.hide();
+                }
+            }).trigger('change');
+            {% if form.usd_value.initial is None %}
+                currency.on('change', (e) => {
+                    if (e.target.value === 'usd') {
+                        submit.attr('disabled', true);
+                        submit.addClass('disabled');
+                    } else {
+                        submit.attr('disabled', false);
+                        submit.removeClass('disabled');
+                    }
+                });
+            {% endif %}
         });
     </script>
 {% endblock %}

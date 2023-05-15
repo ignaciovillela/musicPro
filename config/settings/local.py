@@ -28,10 +28,14 @@ INSTALLED_APPS = [
     'crispy_forms',
     'widget_tweaks',
 
+    # Project base apps
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
     'order.apps.OrderConfig',
     'coupons.apps.CouponsConfig',
+
+    # Own apps
+    'api_consumer.apps.ApiConsumerConfig',
 ]
 
 MIDDLEWARE = [

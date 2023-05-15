@@ -1,5 +1,8 @@
+from decimal import Decimal
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 class Coupon(models.Model):
     code = models.CharField(max_length=50, unique=True)
@@ -10,3 +13,10 @@ class Coupon(models.Model):
 
     def __str__(self):
         return self.code
+
+    @property
+    def rate(self):
+        return Decimal(self.discount) / Decimal('100')
+
+    def apply_discount(self, value):
+        return Decimal(value) * self.rate
