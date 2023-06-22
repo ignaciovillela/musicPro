@@ -88,22 +88,16 @@ def order_created(request, pk):
 
 
 def order_approve(request, pk):
-    print('order_approve')
-
-    def approve_func():
-        order = Order.objects.get(pk=pk, paid=False)
-        result = tom_bank_check_pay(order)
-        if result.is_ok():
-            data = result.ok()
-            if data['estado'] == 'F':
-                order.paid = True
-                order.save()
-
-    threading.Thread(target=approve_func).start()
+    order = Order.objects.get(pk=pk, paid=False)
+    result = tom_bank_check_pay(order)
+    if result.is_ok():
+        data = result.ok()
+        if data['estado'] == 'F':
+            order.paid = True
+            order.save()
     return JsonResponse({})
 
 
 def order_reject(request, pk):
-    print('order_reject')
     order = Order.objects.get(pk=pk, paid=False)
     return JsonResponse({})

@@ -57,22 +57,6 @@ def tom_bank_create_pay(order: Order, request):
         return Err('No se pudo realizar la transacción con TomBank')
 
 
-_ = {
-    "id": "f7c3a9c1-626d-46d4-bf67-d76b50a81a93",
-    "monto": "1000",
-    "detalle": "music pro",
-    "fecha": "07/05/2023",
-    "hora": "17:15",
-    "estado": "P",
-    "estado_display": "Pendiente",
-    "success_url": "",
-    "error_url": "",
-    "redireccion_url": "google.com",
-    "url_pago": "http://127.0.0.1:8002/realizar_pago/f7c3a9c1-626d-46d4-bf67-d76b50a81a93/",
-    "url_estado": "http://127.0.0.1:8002/api/verificar_pago/?id=f7c3a9c1-626d-46d4-bf67-d76b50a81a93"
-}
-
-
 def tom_bank_check_pay(order: Order):
     url = os.environ.get('API_TOM_BANK_CHECK_PAY_URL')
     try:
