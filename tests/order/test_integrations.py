@@ -16,9 +16,19 @@ class IntegrationTestViews(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.category = Category.objects.create(name='fastfood', slug='fastfood1',)
-        self.product = Product.objects.create(category=self.category, id=20, name='testproduct', slug='testproduct',
-        description='my test product', image='static/core/img/logo.png', price=30)
+        self.category = Category.objects.create(
+            name='fastfood',
+            slug='fastfood1',
+        )
+        self.product = Product.objects.create(
+            id=20,
+            category=self.category,
+            name='testproduct',
+            slug='testproduct',
+            description='my test product',
+            image='static/core/img/logo.png',
+            price=30,
+        )
         self.session = self.client.session
         self.session[settings.CART_SESSION_ID] = {
             self.product.id: {'quantity': 2, 'price': str(self.product.price)},

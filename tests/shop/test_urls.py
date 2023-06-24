@@ -1,6 +1,8 @@
-from shop.views import *
 from django.test import SimpleTestCase
-from django.urls import reverse, resolve
+from django.urls import resolve, reverse
+
+from shop.views import product_detail, product_list
+
 
 class TestUrls(SimpleTestCase):
 
@@ -8,11 +10,9 @@ class TestUrls(SimpleTestCase):
         url = reverse('shop:product_list')
         self.assertEqual(resolve(url).func, product_list)
 
-
     def test_list_by_category_url(self):
         url = reverse('shop:product_list_by_category', args=['any-slug'])
         self.assertEqual(resolve(url).func, product_list)
-
 
     def test_detail_url(self):
         url = reverse('shop:product_detail', kwargs={'id': 1, 'slug': 'any-slug'})
