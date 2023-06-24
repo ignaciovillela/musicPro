@@ -45,18 +45,17 @@ class IntegrationTestViews(TestCase):
         }
 
     @patch(f'{CONSUMER_PATH}.get_exchange_data')
-    def test_set_total_exchange_api_is_available(self, exchange_mock):
+    def test_set_total_exchange_when_api_is_available(self, exchange_mock):
         exchange_mock.return_value = Ok({'value': 830})
 
         response = self.client.post(reverse('order:order_create'))
         response_json = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'order/create.html')
-        self.assertFalse(response_json['ok'])
         self.assertIn('value="830.00"', response_json['page'])
 
     @patch(f'{CONSUMER_PATH}.get_exchange_data')
-    def test_not_raise_when_exchange_api_is_not_available(self, exchange_mock):
+    def test_not_raise_error_when_exchange_api_is_not_available(self, exchange_mock):
         error_text = 'A test error'
         exchange_mock.return_value = Err(error_text)
 

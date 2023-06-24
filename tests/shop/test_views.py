@@ -46,6 +46,6 @@ class TestViews(TestCase):
     def test_product_detail_view_error(self):
         response = self.client.get(reverse(
             'shop:product_detail',
-            kwargs={'id': 21, 'slug': 'nottestproduct'})
+            kwargs={'id': 21, 'slug': 'not_test_product'})
         )
         self.assertEqual(response.status_code, 404)
